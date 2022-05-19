@@ -1,0 +1,63 @@
+html, body {
+    margin: 0;
+    box-sizing: border-box;
+    background-color: #8EE4AF;
+    font-family: 'Anek', sans-serif;
+}
+@font-face {
+          font-family: 'Anek';
+          src: url('Fonts/AnekTamil-VariableFont_wdth,wght.ttf');
+          font-weight: normal;
+          font-style: normal;
+        }
+
+nav{
+    background: linear-gradient(to right, #379683, #379683);
+}
+
+.container-fluid {
+    flex-direction: column;
+    justify-items: center;
+}
+
+.navbar-collapse {
+    width: 100%;
+    justify-content: right;
+}
+
+.navbar-collapse, .barraBotoes, .barraBotoesInferiores, .divBotoesPontos{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btns-Barra{
+    background-color: #5CDB95;
+    border-color: #05386B;
+    color: #05386B
+}
+
+.btns-Barra:hover{
+    background-color: #8EE4AF;
+    border-color: #05386B;
+    color: #05386B
+}
+
+form {
+    display: flex;
+    max-width: 30%;
+}
+
+.divCheckboxes{
+    width: 70%;
+}
+
+canvas{
+    width: 100%;
+    height: 100%;
+}
+
+legend{
+    color: #05386B;
+    margin: 1%;
+}
