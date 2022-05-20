@@ -15,7 +15,7 @@ function Interpolação(pontoA, pontoB, t){
 // entre os pontos passados como parâmetro, utilizando t como parâmetro
 function deCasteljau(pontos, t){
     var grau = pontos.length -1;
-    if (grau == 1){
+    if (grau === 1){
         return Interpolação(pontos[0], pontos[1], t)
     }
     else {
@@ -61,29 +61,62 @@ var exibirCurvas = true;
 // funções de desenhar
 
 function desenharPonto(ponto){
-
+    ctx.beginPath();
+    ctx.arc(ponto.coordX, ponto.coordY, raioPonto, 0, 2 * Math.PI);
+    ctx.stroke();
 }
 
 function desenharLinha(pontoA, pontoB){
-
+    ctx.beginPath();
+    ctx.lineTo(pontoA.coordX, pontoA.coordY);
+    ctx.lineTo(pontoB.coordX, pontoB.coordY);
+    ctx.stroke();
 }
 
 function desenharPoligonoControle(pontos){
-
+    for (let i = 0; i < pontos.length; i++){
+        desenharLinha(pontos[i], pontos[i+1]);
+    }
 }
 
-function desenharCurvaBezier(curva) {
-
+function desenharCurvaBezier(pontos) {
+    if(pontos.length > 2){
+        var curvasBezier = [];
+        curvasBezier.push(pontos[0]);
+        for (let i = 0; i < numeroAvaliacoes-2; i++){
+            curvasBezier.push(deCasteljau(pontos, i/(numeroAvaliacoes)));
+        }
+        curvasBezier.push(pontos[pontos.length-1]);
+        desenharCurvaBezier(curvasBezier);
+    }
 }
 
 // deverá ser chamada sempre que fazemos algo no canvas, para que não fique "lixo" na tela
 function redesenhar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (exibirPontos){
+        for (let i = 0; i < curvas.length; i++){
+            for (let j = 0; j < curvas[i].length; j++){
+                desenharPonto(curvas[i][j]);
+            }
+        }
+    }
+    if (exibirPoligonais){
+        for (let i = 0; i < curvas.length; i++){
+            desenharPoligonoControle(curvas[i]);
+        }
+    }
+    if (exibirCurvas && numeroAvaliacoes > 1){
+        for (let i = 0; i < curvas.length; i++){
+            desenharCurvaBezier(curvas[i]);
+        }
+    }
 
 }
 
 // listeners
 
-        // para os botões
+// para os botões
 criarCurva.addEventListener("click", function(event) {
 
 });
@@ -130,7 +163,7 @@ exibirCurvas.addEventListener("click", function(event){
 
 
 
-            // para o canvas
+// para o canvas
 canvas.addEventListener("mousedown", function(event){
 
 });
@@ -145,7 +178,7 @@ canvas.addEventListener("mouseup", function(event){
 
 
 
-        // para o campo avaliações -> teclado
+// para o campo avaliações -> teclado
 campoAvaliacoes.addEventListener("keyup", function(event){
 
 });
