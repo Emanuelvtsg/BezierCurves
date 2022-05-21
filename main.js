@@ -226,7 +226,7 @@ addPonto.addEventListener("click", function(event){
 apagarPonto.addEventListener("click", function(event){
     if(curvas[curvaSelecionada].length > 0){
         curvas[curvaSelecionada].splice(pontoSelecionado[curvaSelecionada], 1);
-         pontoSelecionado.splice(curvaSelecionada, 1);
+        pontoSelecionado.splice(curvaSelecionada, 1, 0)
         if(curvas[curvaSelecionada].length === 0){ // se apagamos o ultimo elemento
             curvas.splice(curvaSelecionada, 1);
             if(curvaSelecionada > 0){
@@ -234,6 +234,7 @@ apagarPonto.addEventListener("click", function(event){
             }
             if(curvas.length === 0){
                 curvaSelecionada = -1;
+                textoApoio.innerText = "Inicie uma ação pressionando em algum dos botões acima!"
             }
         }
         redesenhar();
