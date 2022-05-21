@@ -45,7 +45,7 @@ nav{
 
 form {
     display: flex;
-    max-width: 30%;
+    max-width: 20%;
 }
 
 .divCheckboxes{
@@ -53,7 +53,7 @@ form {
 }
 
 canvas{
-    background-color: white;
+    background-color: #8EE4AF;
 }
 
 legend{
@@ -61,3 +61,4 @@ legend{
     font-size: large;
     margin: 1%;
 }
+

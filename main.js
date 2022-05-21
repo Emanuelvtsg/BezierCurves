@@ -8,7 +8,7 @@ class Ponto{
 
 // cria um novo ponto interpolado entre dois pontos, utilizando parâmetro t
 function Interpolação(pontoA, pontoB, t){
-    return new Ponto(pontoA.coordX * (1 - t) + pontoB.coordX * t, pontoA.coordY * (1 - t) + pontoB.coordY * t);
+    return new Ponto(((pontoA.coordX * (1 - t)) + (pontoB.coordX * t)), ((pontoA.coordY * (1 - t)) + (pontoB.coordY * t)));
 }
 
 // algoritmo de deCasteljau. Retorna o último ponto interpolado dentre a sequência de interpolações realizadas
@@ -21,7 +21,7 @@ function deCasteljau(pontos, t){
     else {
         var pontosIntermed = [];
         for (let i = 0; i < grau; i++){
-            pontosIntermed.push(Interpolação(pontos[i], pontos[i+1]));
+            pontosIntermed.push(Interpolação(pontos[i], pontos[i+1], t));
         }
         return deCasteljau(pontosIntermed, t);
     }
@@ -33,28 +33,30 @@ var criarCurva = document.getElementById("criarCurva");
 var apagarCurva = document.getElementById("apagarCurva");
 var proxCurva = document.getElementById("proxCurva");
 var antCurva = document.getElementById("antCurva");
+var limparTela = document.getElementById("limparTela");
 var campoAvaliacoes = document.getElementById("campoAvaliacoes");
 var addPonto = document.getElementById("addPonto");
 var apagarPonto = document.getElementById("apagarPonto");
+var reposPonto = document.getElementById("reposPonto");
 var proxPonto = document.getElementById("proxPonto");
 var antPonto = document.getElementById("antPonto");
 var exibirPontosCheckbox = document.getElementById("exibirPontos");
 var exibirPoligonaisCheckbox = document.getElementById("exibirPoligonais");
 var exibirCurvasCheckbox = document.getElementById("exibirCurvas");
 var textoApoio = document.getElementById("textoApoio");
+textoApoio.innerText = "Inicie uma ação pressionando em algum dos botões acima!"
 var canvas = document.getElementById("canvas");
+
 
 // canvas
 var ctx = canvas.getContext("2d");
 
 // variáveis auxiliares
 
-const raioPonto = 4;
+const raioPonto = 6;
 var curvas = []; // array de curvas, onde cada curva é um array de pontos
-curvas.push([]);
 var curvaSelecionada = -1; // ponteiro para a curva selecionada
 var pontoSelecionado = []; // array de ponteiro para as curvas, a posição 0 indica o ponto selecionado para a curva 0, etc
-pontoSelecionado.push(0);
 var numeroAvaliacoes = 100;
 var estadoCanvas = 0; // 1 - está acrescentando, 2 - está reposicionando
 var clique = false;
@@ -74,7 +76,7 @@ function desenharLinha(pontoA, pontoB){
     ctx.beginPath();
     ctx.lineTo(pontoA.coordX, pontoA.coordY);
     ctx.lineTo(pontoB.coordX, pontoB.coordY);
-    ctx.strokeStyle = "5px"
+    ctx.strokeStyle = "8px"
     ctx.stroke();
 }
 
@@ -106,7 +108,7 @@ function redesenhar() {
         for (let i = 0; i < curvas.length; i++){
             for (let j = 0; j < curvas[i].length; j++){
                 if ((j == pontoSelecionado[curvaSelecionada]) && (i == curvaSelecionada)){
-                    ctx.strokeStyle = "black";
+                    ctx.strokeStyle = "red";
                 }
                 else {
                     ctx.strokeStyle = "black";
@@ -120,7 +122,7 @@ function redesenhar() {
     if (exibirPoligonais){
         for (let i = 0; i < curvas.length; i++){
             if (i == curvaSelecionada){
-                ctx.strokeStyle = "black";
+                ctx.strokeStyle = "#05386B";
             }
             else {
                 ctx.strokeStyle = "black";
@@ -131,7 +133,7 @@ function redesenhar() {
     if (exibirCurvas && numeroAvaliacoes > 1){
         for (let i = 0; i < curvas.length; i++){
             if (i == curvaSelecionada) {
-                ctx.strokeStyle = "black";
+                ctx.strokeStyle = "#05386B";
             }
             else {
                 ctx.strokeStyle = "black";
@@ -153,8 +155,9 @@ criarCurva.addEventListener("click", function(event) {
         var novaCurva = [];
         curvas.push(novaCurva);
         pontoSelecionado.push(0);
-        curvaSelecionada++;
+        curvaSelecionada = curvas.length - 1;
         textoApoio.innerText = "Clique na tela para adicionar os pontos para a sua curva.";
+        redesenhar();
     }
     else {
         textoApoio.innerText = "Finalize a curva atual antes de adicionar uma nova.";
@@ -165,24 +168,39 @@ criarCurva.addEventListener("click", function(event) {
 apagarCurva.addEventListener("click", function(event){
     if(curvas.length > 0){
         curvas.splice(curvaSelecionada, 1);
-        curvaSelecionada.splice(curvaSelecionada, 1);
+        pontoSelecionado.splice(curvaSelecionada, 1);
         if(curvaSelecionada > 0){
             curvaSelecionada--;
         }
-        redesenhar();
+        else if(curvaSelecionada == 0){
+            curvaSelecionada = -1;
+            estadoCanvas = 0;
+            textoApoio.innerText = "Inicie uma ação pressionando em algum dos botões acima!"
+        }
     }
+    else {
+        return;
+    }
+    redesenhar();
 });
 
 proxCurva.addEventListener("click", function(event){
-    if(curvaSelecionada < curvas.length-1){
+    if (curvas[curvaSelecionada].length == 0){
+        textoApoio.innerText = "Primeiro faça alguma ação na curva atual para poder trocar de curva."
+    }
+    else if(curvaSelecionada < curvas.length-1){
         curvaSelecionada++;
         redesenhar();
     }
+    
 
 });
 
 antCurva.addEventListener("click", function(event){
-    if(curvaSelecionada > 0){
+    if (curvas[curvaSelecionada].length == 0){
+        textoApoio.innerText = "Primeiro faça alguma ação na curva atual para poder trocar de curva."
+    }
+    else if(curvaSelecionada > 0){
         curvaSelecionada--;
         redesenhar();
     }
@@ -190,8 +208,19 @@ antCurva.addEventListener("click", function(event){
 
 });
 
+limparTela.addEventListener("click", function(event){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pontoSelecionado = [];
+    curvas = [];
+    curvaSelecionada = -1;
+    estadoCanvas = 0;
+    textoApoio.innerText = "Inicie uma ação pressionando em algum dos botões acima!"
+});
+
 addPonto.addEventListener("click", function(event){
     estadoCanvas = 1;
+    textoApoio.innerText = "Clique na tela para adicionar os pontos para a sua curva.";
+
 });
 
 apagarPonto.addEventListener("click", function(event){
@@ -209,6 +238,12 @@ apagarPonto.addEventListener("click", function(event){
         }
         redesenhar();
     }
+
+});
+
+reposPonto.addEventListener("click", function(event){
+    estadoCanvas = 2;
+    textoApoio.innerText = "Clique na tela para reposicionar o ponto selecionado.";
 
 });
 
@@ -249,6 +284,7 @@ canvas.addEventListener("mousedown", function(event){
     clique = true;
     var pontoA = new Ponto(event.offsetX, event.offsetY);
     if (estadoCanvas == 1){
+        textoApoio.innerText = "Clique na tela para adicionar os pontos para a sua curva."
         curvas[curvaSelecionada].push(pontoA);
     }
     else if (estadoCanvas == 2){
