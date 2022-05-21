@@ -94,7 +94,7 @@ function desenharCurvaBezier(pontos) {
         var curvasBezier = [];
         curvasBezier.push(pontos[0]);
         for (let i = 1; i <= numeroAvaliacoes-2; i++){
-            curvasBezier.push(deCasteljau(pontos, i/(numeroAvaliacoes)));
+            curvasBezier.push(deCasteljau(pontos, i/(numeroAvaliacoes - 1)));
         }
         curvasBezier.push(pontos[pontos.length-1]);
         desenharPoligonoControle(curvasBezier);
