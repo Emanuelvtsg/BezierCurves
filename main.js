@@ -172,7 +172,7 @@ apagarCurva.addEventListener("click", function(event){
         if(curvaSelecionada > 0){
             curvaSelecionada--;
         }
-        else if(curvaSelecionada == 0){
+        else if(curvaSelecionada == 0 && curvas.length == 0){
             curvaSelecionada = -1;
             estadoCanvas = 0;
             textoApoio.innerText = "Inicie uma ação pressionando em algum dos botões acima!"
