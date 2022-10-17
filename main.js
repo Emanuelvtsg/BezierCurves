@@ -1,3 +1,4 @@
+// Part of this code was given by the teaching assistant Lúcio Melo (carta-cin at GitHub)
 // constrói um ponto A=(x,y)
 class Ponto{
     constructor(coordX, coordY) {
